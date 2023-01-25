@@ -10,10 +10,14 @@
 <body>
     <script src="./d3.v7.min.js"></script>
     <script type="module" src="./main.js"></script>
-    <div style="display: flex-inline">
-        <div style="width: 60%; height: 70vw"><div id="scatterplot"></div></div>
+    <div>
+        <div style="width: 60%; height: auto; position: absolute; left:30px; top: 50px; z-index: 4"><div id="scatterplot"></div></div>
         
-        <p>HERE</p>
+        <div style="position: absolute; right:100px; top: 50px; z-index: 6">
+            <div>TOGGLE GENRE/ARTIST</div>
+            <br>
+            <div>Hoverable list of genres or artists</div>
+        </div>
     </div>
 </body>
 

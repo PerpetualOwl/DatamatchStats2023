@@ -6,9 +6,25 @@
 
 import {Runtime, Library, Inspector} from "./runtime.js";
 
+
+
 var display = "artist";
 const runtime = new Runtime();
 const main = runtime.module(define, Inspector.into("#scatterplot"));
+
+
+function _dotcolor(d) {
+    const topartists = ["Adele", "Drake", "Lady Gaga", "Taylor Swift", "Beyoncé"];
+    const topgenres = ["Pop", "R&B", "Hip-Hop", "Country", "Rap"];
+
+    const ind = topartists.findIndex(x => x == d.artist);
+
+    if (ind == -1) {
+        return "steelblue";
+    }
+    return d3.schemeSet3[ind];
+
+}
 
 
 function _selection(d3, width, height, xAxis, yAxis, data, x, y) {
@@ -27,12 +43,12 @@ function _selection(d3, width, height, xAxis, yAxis, data, x, y) {
 
     const dot = svg.append("g")
         .attr("fill", "none")
-        .attr("stroke", "steelblue")
         .attr("stroke-width", 1.5)
         .selectAll("circle")
         .data(data)
         .join("circle")
         .attr("transform", d => `translate(${x(d.x)},${y(d.y)})`)
+        .attr("stroke", function(d){return _dotcolor(d) })
         .attr("r", 3);
 
     svg.call(brush);
@@ -44,10 +60,10 @@ function _selection(d3, width, height, xAxis, yAxis, data, x, y) {
             value = dot
                 .style("stroke", "gray")
                 .filter(d => x0 <= x(d.x) && x(d.x) < x1 && y0 <= y(d.y) && y(d.y) < y1)
-                .style("stroke", "steelblue")
+                .style("stroke", function(d){return _dotcolor(d) })
                 .data();
         } else {
-            dot.style("stroke", "steelblue");
+            dot.style("stroke", function(d){return _dotcolor(d) });
         }
         svg.property("value", value).dispatch("input");
     }
@@ -126,7 +142,7 @@ function _yAxis(margin, d3, y, data) {
 
 async function _data(d3, FileAttachment) {
     return (
-        Object.assign(d3.csvParse(await FileAttachment("artists.csv").text(), ({ Artist: artist, Genre: genre, matches: x, hours: y }) => ({ artist, genre, x: +x, y: +y })), { x: "Matches / Dates", y: "Hours listened" })
+        Object.assign(d3.csvParse(await FileAttachment("artists.csv").text(), ({ Artist: artist, matches: x, hours: y }) => ({ artist, x: +x, y: +y })), { x: "Matches / Dates", y: "Hours listened" })
     )
 }
 
