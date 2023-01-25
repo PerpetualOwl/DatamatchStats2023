@@ -11,25 +11,30 @@
 </head>
 
 <body>
+    <script type='text/javascript' > 
+        var display = "artist";
+    </script>
     <script src="./d3.v7.min.js"></script>
     <script type="module" src="./main.js"></script>
+    <script type='text/javascript' src="./toggle.js"></script>
     <div>
         <div style="width: 60%; height: auto; position: absolute; left:30px; top: 50px; z-index: 4"><div id="scatterplot"></div></div>
         
         <div style="position: absolute; right:100px; top: 50px; z-index: 6">
             <div>TOGGLE GENRE/ARTIST</div>
-            <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons">
+            <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons" name="toggle">
                 <label class="btn btn-secondary active">
-                  <input type="radio" name="controlHeatmapType" value="MRR" checked>Artist<br>
+                  <input type="radio" onchange="changeColor()" name="controlHeatmapType" value="MRR" checked>Artist<br>
                 </label>
                 <label class="btn btn-secondary">
-                  <input type="radio" name="controlHeatmapType" value="LYL">Genre<br>
+                  <input type="radio" onchange="changeColor()" name="controlHeatmapType" value="LYL">Genre<br>
                 </label>
               </form>
             <br>
             <div>Hoverable list of genres or artists</div>
         </div>
     </div>
+    
 </body>
 
 </html>

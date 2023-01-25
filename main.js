@@ -6,9 +6,6 @@
 
 import {Runtime, Library, Inspector} from "./runtime.js";
 
-
-
-var display = "artist";
 const runtime = new Runtime();
 const main = runtime.module(define, Inspector.into("#scatterplot"));
 
@@ -16,9 +13,14 @@ const main = runtime.module(define, Inspector.into("#scatterplot"));
 function _dotcolor(d) {
     const topartists = ["Adele", "Drake", "Lady Gaga", "Taylor Swift", "Beyoncé"];
     const topgenres = ["Pop", "R&B", "Hip-Hop", "Country", "Rap"];
-
-    const ind = topartists.findIndex(x => x == d.artist);
-
+    var ind = -1;
+    if (display == "artist") {
+        ind = topartists.findIndex(x => x == d.artist);
+    } else if (display == "genre") {
+        ind = topgenres.findIndex(x => x == d.genre);
+    } else {
+        console.log("error");
+    }
     if (ind == -1) {
         return "steelblue";
     }
@@ -43,18 +45,19 @@ function _selection(d3, width, height, xAxis, yAxis, data, x, y) {
 
     const dot = svg.append("g")
         .attr("fill", "none")
-        .attr("stroke-width", 1.5)
+        .attr("stroke-width", 5) // should be 1.5
         .selectAll("circle")
         .data(data)
         .join("circle")
         .attr("transform", d => `translate(${x(d.x)},${y(d.y)})`)
         .attr("stroke", function(d){return _dotcolor(d) })
-        .attr("r", 3);
+        .attr("r", 10); // should be 3
 
     svg.call(brush);
 
     function brushed({ selection }) {
         let value = [];
+        console.log("HERE");
         if (selection) {
             const [[x0, y0], [x1, y1]] = selection;
             value = dot
@@ -142,7 +145,7 @@ function _yAxis(margin, d3, y, data) {
 
 async function _data(d3, FileAttachment) {
     return (
-        Object.assign(d3.csvParse(await FileAttachment("artists.csv").text(), ({ Artist: artist, matches: x, hours: y }) => ({ artist, x: +x, y: +y })), { x: "Matches / Dates", y: "Hours listened" })
+        Object.assign(d3.csvParse(await FileAttachment("artists.csv").text(), ({ Artist: artist, Genre: genre, matches: x, hours: y }) => ({ artist, genre, x: +x, y: +y })), { x: "Matches / Dates", y: "Hours listened" })
     )
 }
 
