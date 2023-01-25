@@ -9,15 +9,7 @@
 
 <body>
     <script src="./d3.v7.min.js"></script>
-    <script type="module">
-
-        import define from "./brushablescatterplot.js";
-        import {Runtime, Library, Inspector} from "./runtime.js";
-        
-        const runtime = new Runtime();
-        const main = runtime.module(define, Inspector.into(document.body));
-        
-        </script>
+    <script type="module" src="./main.js"></script>
 </body>
 
 </html>

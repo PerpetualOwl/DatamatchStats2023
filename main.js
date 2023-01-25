@@ -1,3 +1,9 @@
+import define from "./brushablescatterplot.js";
+import {Runtime, Library, Inspector} from "./runtime.js";
+
+const runtime = new Runtime();
+const main = runtime.module(define, Inspector.into(document.body));
+
 
 
 function loadData() {
@@ -21,7 +27,5 @@ function loadData() {
     });
 }
 
-
-var SVG = d3.select("#svg");
 
 
