@@ -32,29 +32,29 @@ function Scatterplot(data, {
     strokeWidth = 1.5, // stroke width for dots
     halo = "#fff", // color of label halo 
     haloWidth = 3 // padding around the labels
-  } = {}) {
+} = {}) {
     // Compute values.
     const X = d3.map(data, x);
     const Y = d3.map(data, y);
     const T = title == null ? null : d3.map(data, title);
     const I = d3.range(X.length).filter(i => !isNaN(X[i]) && !isNaN(Y[i]));
-  
+
     // Compute default domains.
     if (xDomain === undefined) xDomain = d3.extent(X);
     if (yDomain === undefined) yDomain = d3.extent(Y);
-  
+
     // Construct scales and axes.
     const xScale = xType(xDomain, xRange);
     const yScale = yType(yDomain, yRange);
     const xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat);
     const yAxis = d3.axisLeft(yScale).ticks(height / 50, yFormat);
-  
+
     const svg = d3.create("svg")
         .attr("width", width)
         .attr("height", height)
         .attr("viewBox", [0, 0, width, height])
         .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
-  
+
     svg.append("g")
         .attr("transform", `translate(0,${height - marginBottom})`)
         .call(xAxis)
@@ -68,7 +68,7 @@ function Scatterplot(data, {
             .attr("fill", "currentColor")
             .attr("text-anchor", "end")
             .text(xLabel));
-  
+
     svg.append("g")
         .attr("transform", `translate(${marginLeft},0)`)
         .call(yAxis)
@@ -82,15 +82,15 @@ function Scatterplot(data, {
             .attr("fill", "currentColor")
             .attr("text-anchor", "start")
             .text(yLabel));
-  
+
     if (T) svg.append("g")
         .attr("font-family", "sans-serif")
         .attr("font-size", 10)
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
-      .selectAll("text")
-      .data(I)
-      .join("text")
+        .selectAll("text")
+        .data(I)
+        .join("text")
         .attr("dx", 7)
         .attr("dy", "0.35em")
         .attr("x", i => xScale(X[i]))
@@ -100,17 +100,43 @@ function Scatterplot(data, {
         .attr("fill", "none")
         .attr("stroke", halo)
         .attr("stroke-width", haloWidth);
-  
+
     svg.append("g")
         .attr("fill", fill)
         .attr("stroke", stroke)
         .attr("stroke-width", strokeWidth)
-      .selectAll("circle")
-      .data(I)
-      .join("circle")
+        .selectAll("circle")
+        .data(I)
+        .join("circle")
         .attr("cx", i => xScale(X[i]))
         .attr("cy", i => yScale(Y[i]))
         .attr("r", r);
-  
+
     return svg.node();
-  }
+}
+
+function loadData() {
+    d3.csv("data/house-signups.csv", function(error, csv) {
+
+        // Step 3: Get the data ready: change numeric fields to being numbers!
+        
+        csv.forEach(function(d) { // forEach is a good option
+            d["percent_signup"] = parseFloat(d["percent_signup"]);
+            d["population"] = parseInt(d["population"]);
+            d["total_signups"] = Math.round(d["percent_signup"] * d["population"] / 100);
+        });
+        console.log(csv);
+        // Store csv data in global variable
+        data = csv;
+
+        // updateSchoolsVisualization gets automatically called within the data = csv call;
+        // basically(whenever the data is set to a value using = operator);
+        // see the definition above: Object.defineProperty(window, 'data', { ...
+
+    });
+}
+
+
+var SVG = d3.select("#svg");
+
+
