@@ -8,9 +8,16 @@
 </head>
 
 <body>
-    <svg id="svg" height=500 width=500></svg>
     <script src="./d3.v7.min.js"></script>
-    <script src="./main.js"></script>
+    <script type="module">
+
+        import define from "./brushablescatterplot.js";
+        import {Runtime, Library, Inspector} from "./runtime.js";
+        
+        const runtime = new Runtime();
+        const main = runtime.module(define, Inspector.into(document.body));
+        
+        </script>
 </body>
 
 </html>

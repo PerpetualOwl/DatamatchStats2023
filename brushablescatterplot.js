@@ -110,7 +110,7 @@ function _1(data,md){return(
       const main = runtime.module();
       function toString() { return this.url; }
       const fileAttachments = new Map([
-        ["cars-2.csv", {url: new URL("./files/53c407ee531bab128477148c9e28c49dd06bf83a93ae317e58dbb9fc819db0d4f6c4fb9646fa2fe20faad76addee20cfc360eab2362eeaec3340a5e4655b9996.csv", import.meta.url), mimeType: "text/csv", toString}]
+        ["cars-2.csv", {url: new URL("./cars-2.csv", import.meta.url), mimeType: "text/csv", toString}]
       ]);
       main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
       main.variable(observer()).define(["data","md"], _1);
