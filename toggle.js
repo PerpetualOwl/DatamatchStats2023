@@ -1,4 +1,16 @@
 var display = "artist";
+const height = 900;
+const width = 900;
+var brush;
+var svg;
+var dot;
+
+function updatebrushed({ selection }) {
+    let value = [];
+    console.log("toggle_updated");
+    dot.style("stroke", function (d) { return _dotcolor(d) });
+    svg.property("value", value).dispatch("input");
+}
 
 function changeColor() {
     console.log("toggle");
@@ -7,6 +19,7 @@ function changeColor() {
     } else if (display == "genre") {
         display = "artist";
     }
+    svg.selectAll().call(updatebrushed);
 }
 
 function _dotcolor(d) {
