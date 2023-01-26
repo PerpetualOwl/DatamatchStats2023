@@ -1,5 +1,3 @@
-
-
 //todo
 // different colors for different artists/genres
 // filter by artist/genre
@@ -10,26 +8,8 @@ const runtime = new Runtime();
 const main = runtime.module(define, Inspector.into("#scatterplot"));
 
 
-function _dotcolor(d) {
-    const topartists = ["Adele", "Drake", "Lady Gaga", "Taylor Swift", "Beyoncé"];
-    const topgenres = ["Pop", "R&B", "Hip-Hop", "Country", "Rap"];
-    var ind = -1;
-    if (display == "artist") {
-        ind = topartists.findIndex(x => x == d.artist);
-    } else if (display == "genre") {
-        ind = topgenres.findIndex(x => x == d.genre);
-    } else {
-        console.log("error");
-    }
-    if (ind == -1) {
-        return "steelblue";
-    }
-    return d3.schemeSet3[ind];
 
-}
-
-
-function _selection(d3, width, height, xAxis, yAxis, data, x, y) {
+export function _selection(d3, width, height, xAxis, yAxis, data, x, y) {
     const svg = d3.create("svg")
         .attr("viewBox", [0, 0, width, height])
         .property("value", []);
@@ -168,6 +148,7 @@ function define(runtime, observer) {
     main.variable(observer("xAxis")).define("xAxis", ["height", "margin", "d3", "x", "width", "data"], _xAxis);
     main.variable(observer("yAxis")).define("yAxis", ["margin", "d3", "y", "data"], _yAxis);
     main.variable(observer("data")).define("data", ["d3", "FileAttachment"], _data);
+    main.variable(observer("display")).define("display", ["d3", "width", "height", "xAxis", "yAxis", "data", "x", "y"], _selection);
     return main;
 }
 
