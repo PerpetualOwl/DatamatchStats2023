@@ -5,6 +5,7 @@ const width = 900;
 var brush;
 var svg;
 var dot;
+var text;
 const topartists = ["Adele", "Drake", "Lady Gaga", "Taylor Swift", "Beyoncé", "Other"];
 const topgenres = ["Pop", "R&B", "Hip-Hop", "Country", "Rap", "Other"];
 

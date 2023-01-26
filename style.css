@@ -104,3 +104,7 @@
 .btn-hover:hover {
     background-color: #bde0ff;
 }
+
+.observablehq--inspect {
+    visibility: hidden;
+}

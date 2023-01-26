@@ -23,7 +23,8 @@
             <span id="scatterplot"></span>
         </div>
 
-        <div style="position: absolute; right:100px; top: 50px; z-index: 6; background-color: aliceblue; border:aliceblue; border-radius: 20px; padding:20px">
+        <div
+            style="position: absolute; right:100px; top: 50px; z-index: 6; background-color: aliceblue; border:aliceblue; border-radius: 20px; padding:20px">
             <div>TOGGLE GENRE/ARTIST</div><br>
             <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons" name="toggle">
                 <label class="btn btn-secondary active">
@@ -36,9 +37,18 @@
             </form>
             <br><br>
             <div>Hoverable list of genres or artists</div><br>
-            <div id="hover-menu" class="btn-group btn-group-vertical" style="display: block; margin-left: auto; margin-right: auto;" onmouseout="hover('default')">
-              </div>
+            <div id="hover-menu" class="btn-group btn-group-vertical"
+                style="display: block; margin-left: auto; margin-right: auto;" onmouseout="hover('default')">
+            </div>
         </div>
+
+        <!-- <div style="position: absolute; right:200px; top: 500px; z-index:7">
+            Selection Information<br><br>
+            <div>Top Artist</div>
+            <div>Top Genre</div>
+            <div>Average Hours Listened</div>
+            <div>Average Matches/Dates</div>
+        </div> -->
     </div>
 
 </body>
