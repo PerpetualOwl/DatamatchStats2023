@@ -1,5 +1,5 @@
 var display = "artist";
-var selection = "all";
+var selection = "default";
 const height = 900;
 const width = 900;
 var brush;
@@ -12,19 +12,23 @@ function updateMenu() {
     $(".btn-hover").remove();
     if (display == "artist") {
         for (let i = 0; i < topartists.length; i++) {
-            $("#hover-menu").append(`<div type="button" class="btn btn-secondary btn-hover">${topartists[i]}</div>`);
+            $("#hover-menu").append(`<div type="button" class="btn btn-secondary btn-hover" onmouseover="hover('${topartists[i]}')">${topartists[i]}</div>`);
         }
     } else if (display == "genre") {
         for (let i = 0; i < topgenres.length; i++) {
-            $("#hover-menu").append(`<div type="button" class="btn btn-secondary btn-hover">${topgenres[i]}</div>`);
+            $("#hover-menu").append(`<div type="button" class="btn btn-secondary btn-hover" onmouseover="hover('${topgenres[i]}')">${topgenres[i]}</div>`);
         }
     }
+}
+
+function hover(object) {
+    selection = object;
+    svg.selectAll().call(updateBrushed);
 }
 
 
 function updateBrushed({ selection }) {
     let value = [];
-    console.log("toggle_updated");
     dot.style("stroke", function (d) { return _dotcolor(d) });
     svg.property("value", value).dispatch("input");
 }
@@ -48,6 +52,14 @@ function _dotcolor(d) {
         ind = topgenres.findIndex(x => x == d.genre);
     } else {
         console.log("error");
+    }
+    if (selection != "default") {
+        if (display == "artist" && d.artist != selection) {
+            return "#D3D3D3";
+        }
+        if (display == "genre" && d.genre != selection) {
+            return "#D3D3D3";
+        }
     }
     if (ind == -1) {
         return "steelblue";

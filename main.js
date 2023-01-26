@@ -26,13 +26,13 @@ function _selection(d3, width, height, xAxis, yAxis, data, x, y) {
 
     dot = svg.append("g")
         .attr("fill", "none")
-        .attr("stroke-width", 5) // should be 1.5
+        .attr("stroke-width", 3) // should be 1.5
         .selectAll("circle")
         .data(data)
         .join("circle")
         .attr("transform", d => `translate(${x(d.x)},${y(d.y)})`)
         .attr("stroke", function (d) { return _dotcolor(d) })
-        .attr("r", 10); // should be 3
+        .attr("r", 6); // should be 3
 
     svg.call(brush);
 
@@ -41,7 +41,7 @@ function _selection(d3, width, height, xAxis, yAxis, data, x, y) {
         if (selection) {
             const [[x0, y0], [x1, y1]] = selection;
             value = dot
-                .style("stroke", "gray")
+                .style("stroke", "#D3D3D3")
                 .filter(d => x0 <= x(d.x) && x(d.x) < x1 && y0 <= y(d.y) && y(d.y) < y1)
                 .style("stroke", function (d) { return _dotcolor(d) })
                 .data();
