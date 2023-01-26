@@ -100,3 +100,7 @@
     word-break: break-all;
     white-space: pre-wrap
 }
+
+.btn-hover:hover {
+    background-color: #bde0ff;
+}

@@ -23,8 +23,8 @@
             <span id="scatterplot"></span>
         </div>
 
-        <div style="position: absolute; right:100px; top: 50px; z-index: 6">
-            <div>TOGGLE GENRE/ARTIST</div>
+        <div style="position: absolute; right:100px; top: 50px; z-index: 6; background-color: aliceblue; border:aliceblue; border-radius: 20px; padding:20px">
+            <div>TOGGLE GENRE/ARTIST</div><br>
             <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons" name="toggle">
                 <label class="btn btn-secondary active">
                     <input type="radio" onchange="changeColor()" name="controlHeatmapType" value="MRR"
@@ -34,8 +34,10 @@
                     <input type="radio" onchange="changeColor()" name="controlHeatmapType" value="LYL">Genre<br>
                 </label>
             </form>
-            <br>
-            <div>Hoverable list of genres or artists</div>
+            <br><br>
+            <div>Hoverable list of genres or artists</div><br>
+            <div id="hover-menu" class="btn-group btn-group-vertical" style="display: block; margin-left: auto; margin-right: auto;">
+              </div>
         </div>
     </div>
 
