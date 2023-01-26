@@ -31,6 +31,7 @@ function hover(object) {
 function updateBrushed({ selection }) {
     let value = [];
     dot.style("stroke", function (d) { return _dotcolor(d) });
+    dot.style("z-index", function (d) { return _zindex(d) });
     svg.property("value", value).dispatch("input");
 }
 
@@ -66,5 +67,18 @@ function _dotcolor(d) {
         return "steelblue";
     }
     return d3.schemeSet3[ind];
+
+}
+
+function _zindex(d) {
+    if (selection != "default") {
+        if (display == "artist" && d.artist != selection) {
+            return "6";
+        }
+        if (display == "genre" && d.genre != selection) {
+            return "6";
+        }
+    }
+    return "4"
 
 }

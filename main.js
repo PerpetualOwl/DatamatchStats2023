@@ -42,8 +42,10 @@ function _selection(d3, width, height, xAxis, yAxis, data, x, y) {
             const [[x0, y0], [x1, y1]] = selection;
             value = dot
                 .style("stroke", "#D3D3D3")
+                .style("z-index", "4")
                 .filter(d => x0 <= x(d.x) && x(d.x) < x1 && y0 <= y(d.y) && y(d.y) < y1)
                 .style("stroke", function (d) { return _dotcolor(d) })
+                .style("z-index", "6")
                 .data();
         } else {
             dot.style("stroke", function (d) { return _dotcolor(d) });
