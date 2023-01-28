@@ -1,22 +1,33 @@
 const urls = {
   // source: https://gist.github.com/mbostock/7608400
   airports:
-    "https://gist.githubusercontent.com/mbostock/7608400/raw/e5974d9bba45bc9ab272d98dd7427567aafd55bc/airports.csv",
+    "./list_of_dorms.csv",
 
   // source: https://gist.github.com/mbostock/7608400
   flights:
-    "https://gist.githubusercontent.com/mbostock/7608400/raw/e5974d9bba45bc9ab272d98dd7427567aafd55bc/flights.csv"
+    "./connections.csv"
 };
 
-const svg  = d3.select("svg");
+const svg = d3.select("svg");
 
-const width  = parseInt(svg.attr("width"));
+const width = parseInt(svg.attr("width"));
 const height = parseInt(svg.attr("height"));
 const hypotenuse = Math.sqrt(width * width + height * height);
 
-// must be hard-coded to match our topojson projection
-// source: https://github.com/topojson/us-atlas
-const projection = d3.geoAlbers().scale(1280).translate([480, 300]);
+// read list_of_dorms.csv and find maximum and minimum latitude and longitude values
+// these values will be used to scale the map to the svg
+let minLat = 42.368868;
+let maxLat = 42.381169;
+let minLon = -71.124731;
+let maxLon = -71.115963;
+
+// custom d3.js projection that scales a an area defined by minLon, maxLon, minLat, and maxLat to fit the whole svg
+
+console.log((minLat + maxLat) / 2)
+
+const projection = d3.geoMercator().scale(1500000).center([(minLon + maxLon) / 2, (minLat + maxLat) / 2]);
+
+console.log(projection([3,4]))
 
 const scales = {
   // used to scale airport bubbles
@@ -31,16 +42,16 @@ const scales = {
 
 // have these already created for easier drawing
 const g = {
-  basemap:  svg.select("g#basemap"),
-  flights:  svg.select("g#flights"),
+  basemap: svg.select("g#basemap"),
+  flights: svg.select("g#flights"),
   airports: svg.select("g#airports"),
-  voronoi:  svg.select("g#voronoi")
+  voronoi: svg.select("g#voronoi")
 };
 
-console.assert(g.basemap.size()  === 1);
-console.assert(g.flights.size()  === 1);
+console.assert(g.basemap.size() === 1);
+console.assert(g.flights.size() === 1);
 console.assert(g.airports.size() === 1);
-console.assert(g.voronoi.size()  === 1);
+console.assert(g.voronoi.size() === 1);
 
 const tooltip = d3.select("text#tooltip");
 console.assert(tooltip.size() === 1);
@@ -51,7 +62,7 @@ console.assert(tooltip.size() === 1);
 // load the airport and flight data together
 const promises = [
   d3.csv(urls.airports, typeAirport),
-  d3.csv(urls.flights,  typeFlight)
+  d3.csv(urls.flights, typeFlight)
 ];
 
 Promise.all(promises).then(processData);
@@ -61,94 +72,60 @@ function processData(values) {
   console.assert(values.length === 2);
 
   let airports = values[0];
-  let flights  = values[1];
+  let flights = values[1];
 
   console.log("airports: " + airports.length);
   console.log(" flights: " + flights.length);
 
   // convert airports array (pre filter) into map for fast lookup
   let iata = new Map(airports.map(node => [node.iata, node]));
+  console.log(iata)
 
   // calculate incoming and outgoing degree based on flights
   // flights are given by airport iata code (not index)
-  flights.forEach(function(link) {
+  flights.forEach(function (link) {
     link.source = iata.get(link.origin);
     link.target = iata.get(link.destination);
 
     link.source.outgoing += link.count;
     link.target.incoming += link.count;
   });
+  console.log(airports)
 
   // remove airports out of bounds
-  let old = airports.length;
-  airports = airports.filter(airport => airport.x >= 0 && airport.y >= 0);
-  console.log(" removed: " + (old - airports.length) + " airports out of bounds");
+  //let old = airports.length;
+  //airports = airports.filter(airport => airport.x >= 0 && airport.y >= 0);
+  //console.log(" removed: " + (old - airports.length) + " airports out of bounds");
 
   // remove airports with NA state
-  old = airports.length;
-  airports = airports.filter(airport => airport.state !== "NA");
-  console.log(" removed: " + (old - airports.length) + " airports with NA state");
+  //old = airports.length;
+  //airports = airports.filter(airport => airport.state !== "NA");
+  //console.log(" removed: " + (old - airports.length) + " airports with NA state");
 
   // remove airports without any flights
-  old = airports.length;
-  airports = airports.filter(airport => airport.outgoing > 0 && airport.incoming > 0);
-  console.log(" removed: " + (old - airports.length) + " airports without flights");
+  //old = airports.length;
+  //airports = airports.filter(airport => airport.outgoing > 0 && airport.incoming > 0);
+  //console.log(" removed: " + (old - airports.length) + " airports without flights");
 
   // sort airports by outgoing degree
-  airports.sort((a, b) => d3.descending(a.outgoing, b.outgoing));
+  //airports.sort((a, b) => d3.descending(a.outgoing, b.outgoing));
 
   // keep only the top airports
-  old = airports.length;
-  airports = airports.slice(0, 50);
-  console.log(" removed: " + (old - airports.length) + " airports with low outgoing degree");
+  //old = airports.length;
+  //airports = airports.slice(0, 50);
+  //console.log(" removed: " + (old - airports.length) + " airports with low outgoing degree");
 
   // done filtering airports can draw
   drawAirports(airports);
   drawPolygons(airports);
 
   // reset map to only include airports post-filter
-  iata = new Map(airports.map(node => [node.iata, node]));
-
-  // filter out flights that are not between airports we have leftover
-  old = flights.length;
-  flights = flights.filter(link => iata.has(link.source.iata) && iata.has(link.target.iata));
-  console.log(" removed: " + (old - flights.length) + " flights");
 
   // done filtering flights can draw
   drawFlights(airports, flights);
 
-  console.log({airports: airports});
-  console.log({flights: flights});
-}
-
-// draws the underlying map
-function drawMap(map) {
-  // remove non-continental states
-  map.objects.states.geometries = map.objects.states.geometries.filter(isContinental);
-
-  // run topojson on remaining states and adjust projection
-  let land = topojson.merge(map, map.objects.states.geometries);
-
-  // use null projection; data is already projected
-  let path = d3.geoPath();
-
-  // draw base map
-  g.basemap.append("path")
-    .datum(land)
-    .attr("class", "land")
-    .attr("d", path);
-
-  // draw interior borders
-  g.basemap.append("path")
-    .datum(topojson.mesh(map, map.objects.states, (a, b) => a !== b))
-    .attr("class", "border interior")
-    .attr("d", path);
-
-  // draw exterior borders
-  g.basemap.append("path")
-    .datum(topojson.mesh(map, map.objects.states, (a, b) => a === b))
-    .attr("class", "border exterior")
-    .attr("d", path);
+  console.log({ airports: airports });
+  console.log({ flights: flights });
 }
 
 function drawAirports(airports) {
@@ -161,11 +138,11 @@ function drawAirports(airports) {
     .data(airports, d => d.iata)
     .enter()
     .append("circle")
-    .attr("r",  d => scales.airports(d.outgoing))
+    .attr("r", d => scales.airports(d.outgoing))
     .attr("cx", d => d.x) // calculated on load
     .attr("cy", d => d.y) // calculated on load
     .attr("class", "airport")
-    .each(function(d) {
+    .each(function (d) {
       // adds the circle object to our airport
       // makes it fast to select airports on hover
       d.bubble = this;
@@ -174,7 +151,7 @@ function drawAirports(airports) {
 
 function drawPolygons(airports) {
   // convert array of airports into geojson format
-  const geojson = airports.map(function(airport) {
+  const geojson = airports.map(function (airport) {
     return {
       type: "Feature",
       properties: airport,
@@ -195,7 +172,7 @@ function drawPolygons(airports) {
     .append("path")
     .attr("d", d3.geoPath(projection))
     .attr("class", "voronoi")
-    .on("mouseover", function(d) {
+    .on("mouseover", function (d) {
       let airport = d.properties.site.properties;
 
       d3.select(airport.bubble)
@@ -216,7 +193,7 @@ function drawPolygons(airports) {
       tooltip.attr("y", airport.y);
 
       // set the tooltip text
-      tooltip.text(airport.name + " in " + airport.city + ", " + airport.state);
+      tooltip.text(airport.iata);
 
       // double check if the anchor needs to be changed
       let bbox = tooltip.node().getBBox();
@@ -230,7 +207,7 @@ function drawPolygons(airports) {
 
       tooltip.style("visibility", "visible");
     })
-    .on("mouseout", function(d) {
+    .on("mouseout", function (d) {
       let airport = d.properties.site.properties;
 
       d3.select(airport.bubble)
@@ -241,7 +218,7 @@ function drawPolygons(airports) {
 
       d3.select("text#tooltip").style("visibility", "hidden");
     })
-    .on("dblclick", function(d) {
+    .on("dblclick", function (d) {
       // toggle voronoi outline
       let toggle = d3.select(this).classed("highlight");
       d3.select(this).classed("highlight", !toggle);
@@ -264,7 +241,7 @@ function drawFlights(airports, flights) {
     .append("path")
     .attr("d", line)
     .attr("class", "flight")
-    .each(function(d) {
+    .each(function (d) {
       // adds the path object to our source airport
       // makes it fast to select outgoing paths
       d[0].flights.push(this);
@@ -285,10 +262,10 @@ function drawFlights(airports, flights) {
       .strength(0.7)
       .distance(0)
     )
-    .on("tick", function(d) {
+    .on("tick", function (d) {
       links.attr("d", line);
     })
-    .on("end", function(d) {
+    .on("end", function (d) {
       console.log("layout complete");
     });
 
@@ -302,16 +279,16 @@ function generateSegments(nodes, links) {
   // nodes: all nodes including control nodes
   // links: all individual segments (source to target)
   // paths: all segments combined into single path for drawing
-  let bundle = {nodes: [], links: [], paths: []};
+  let bundle = { nodes: [], links: [], paths: [] };
 
   // make existing nodes fixed
-  bundle.nodes = nodes.map(function(d, i) {
+  bundle.nodes = nodes.map(function (d, i) {
     d.fx = d.x;
     d.fy = d.y;
     return d;
   });
 
-  links.forEach(function(d, i) {
+  links.forEach(function (d, i) {
     // calculate the distance between the source and target
     let length = distance(d.source, d.target);
 
@@ -377,10 +354,11 @@ function isContinental(state) {
 // convert gps coordinates to number and init degree
 function typeAirport(airport) {
   airport.longitude = parseFloat(airport.longitude);
-  airport.latitude  = parseFloat(airport.latitude);
+  airport.latitude = parseFloat(airport.latitude);
 
   // use projection hard-coded to match topojson data
   const coords = projection([airport.longitude, airport.latitude]);
+
   airport.x = coords[0];
   airport.y = coords[1];
 
