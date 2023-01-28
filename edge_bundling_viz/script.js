@@ -250,16 +250,16 @@ function drawFlights(airports, flights) {
   // https://github.com/d3/d3-force
   let layout = d3.forceSimulation()
     // settle at a layout faster
-    .alphaDecay(0.1)
+    .alphaDecay(0.08)
     // nearby nodes attract each other
     .force("charge", d3.forceManyBody()
-      .strength(10)
+      .strength(6)
       .distanceMax(scales.airports.range()[1] * 2)
     )
     // edges want to be as short as possible
     // prevents too much stretching
     .force("link", d3.forceLink()
-      .strength(0.7)
+      .strength(2)
       .distance(0)
     )
     .on("tick", function (d) {
