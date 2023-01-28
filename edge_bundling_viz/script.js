@@ -17,7 +17,7 @@ const hypotenuse = Math.sqrt(width * width + height * height);
 // read list_of_dorms.csv and find maximum and minimum latitude and longitude values
 // these values will be used to scale the map to the svg
 let minLat = 42.368868;
-let maxLat = 42.381169;
+let maxLat = 42.38248309999999;
 let minLon = -71.124731;
 let maxLon = -71.115963;
 
@@ -25,7 +25,7 @@ let maxLon = -71.115963;
 
 console.log((minLat + maxLat) / 2)
 
-const projection = d3.geoMercator().scale(1500000).center([(minLon + maxLon) / 2, (minLat + maxLat) / 2]);
+const projection = d3.geoMercator().scale(1400000).center([(minLon + maxLon) / 2, (minLat + maxLat) / 2]);
 
 console.log(projection([3,4]))
 
