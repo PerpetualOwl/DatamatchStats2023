@@ -16,18 +16,40 @@ const hypotenuse = Math.sqrt(width * width + height * height);
 
 // read list_of_dorms.csv and find maximum and minimum latitude and longitude values
 // these values will be used to scale the map to the svg
-let minLat = 42.368868;
-let maxLat = 42.38248309999999;
-let minLon = -71.124731;
-let maxLon = -71.115963;
+const oldminLat = 42.368868;
+const oldmaxLat = 42.38248309999999;
+const oldminLon = -71.124731;
+const oldmaxLon = -71.115963;
+
+let ht = (oldmaxLat - oldminLat)
+let wd = (oldmaxLon - oldminLon)
+
+let minLat = oldminLat
+let maxLat = oldmaxLat
+let minLon = oldminLon
+let maxLon = oldmaxLon
 
 // custom d3.js projection that scales a an area defined by minLon, maxLon, minLat, and maxLat to fit the whole svg
 
-console.log((minLat + maxLat) / 2)
+// const projection = d3.geoMercator().scale(1400000).center([(minLon + maxLon) / 2, (minLat + maxLat) / 2]);
 
-const projection = d3.geoMercator().scale(1400000).center([(minLon + maxLon) / 2, (minLat + maxLat) / 2]);
+RAD2DEG = 180 / Math.PI;
+PI_4 = Math.PI / 4;
 
-console.log(projection([3,4]))
+function lat2y(lat) { return Math.log(Math.tan((lat / 90 + 1) * PI_4 )) * RAD2DEG; }
+function lon2x(lon) { return lon; }
+
+function projection(li) {
+  return [(lon2x(li[0]) - lon2x(oldminLon)) / (lon2x(oldmaxLon) - lon2x(oldminLon)) * width, (lat2y(oldmaxLat) - lat2y(li[1])) / (lat2y(oldmaxLat) - lat2y(oldminLat)) * height]
+  /*let lon = li[0]
+  let lat = li[1]
+  let y = (oldmaxLat - lat) / (ht) * height
+  let x = (oldmaxLon - lon) / (wd) * width
+  return [x, y]*/
+}
+
+
+console.log(projection([-71.1181106,42.3723099]))
 
 const scales = {
   // used to scale airport bubbles
@@ -48,7 +70,6 @@ const g = {
   voronoi: svg.select("g#voronoi")
 };
 
-console.assert(g.basemap.size() === 1);
 console.assert(g.flights.size() === 1);
 console.assert(g.airports.size() === 1);
 console.assert(g.voronoi.size() === 1);
