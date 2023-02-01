@@ -4,21 +4,19 @@ maxLat = 42.38248309999999
 minLon = -71.124731
 maxLon = -71.115963
 
-height = maxLat - minLat
-width = maxLon - minLon
-minLat -= .20 * height
-maxLat += .20 * height
-minLon -= .20 * width
-maxLon += .20 * width
+midLat = (maxLat + minLat) / 2
+midLon = (maxLon + minLon) / 2
 
 
 token = "pk.eyJ1IjoicGVycGV0dWFsb3dsIiwiYSI6ImNsZGptZHI2cjFzaDgzb3I4a3pldmFzN28ifQ.Co912rJ9zIHITERU59D-HA"
 style = "perpetualowl/cldjmnyiv005g01o6isgb6der"
-bounding_box = [minLon, minLat, maxLon, maxLat]
-width = 1280
-height = 720
+#style = "mapbox/streets-v11" #for testing only
+width = 960
+height = 600
+zoom = 13.87
 
-query = f"https://api.mapbox.com/styles/v1/{style}/static/[{bounding_box[0]},{bounding_box[1]},{bounding_box[2]},{bounding_box[3]}]/{width}x{height}@2x?logo=false&access_token={token}"
+
+query = f"https://api.mapbox.com/styles/v1/{style}/static/{midLon},{midLat},{zoom}/{width}x{height}@2x?logo=false&access_token={token}"
 
 print(query)
 import requests # request img from web

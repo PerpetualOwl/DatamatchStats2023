@@ -16,24 +16,19 @@ const hypotenuse = Math.sqrt(width * width + height * height);
 
 // read list_of_dorms.csv and find maximum and minimum latitude and longitude values
 // these values will be used to scale the map to the svg
-const oldminLat = 42.368868;
-const oldmaxLat = 42.38248309999999;
-const oldminLon = -71.124731;
-const oldmaxLon = -71.115963;
+const minLat = 42.368868;
+const maxLat = 42.38248309999999;
+const minLon = -71.124731;
+const maxLon = -71.115963;
 
-let ht = (oldmaxLat - oldminLat)
-let wd = (oldmaxLon - oldminLon)
-
-let minLat = oldminLat
-let maxLat = oldmaxLat
-let minLon = oldminLon
-let maxLon = oldmaxLon
+const midLat = (maxLat + minLat) / 2
+const midLon = (maxLon + minLon) / 2
 
 // custom d3.js projection that scales a an area defined by minLon, maxLon, minLat, and maxLat to fit the whole svg
 
 // const projection = d3.geoMercator().scale(1400000).center([(minLon + maxLon) / 2, (minLat + maxLat) / 2]);
 
-RAD2DEG = 180 / Math.PI;
+/*RAD2DEG = 180 / Math.PI;
 PI_4 = Math.PI / 4;
 
 function lat2y(lat) { return Math.log(Math.tan((lat / 90 + 1) * PI_4 )) * RAD2DEG; }
@@ -41,15 +36,16 @@ function lon2x(lon) { return lon; }
 
 function projection(li) {
   return [(lon2x(li[0]) - lon2x(oldminLon)) / (lon2x(oldmaxLon) - lon2x(oldminLon)) * width, (lat2y(oldmaxLat) - lat2y(li[1])) / (lat2y(oldmaxLat) - lat2y(oldminLat)) * height]
-  /*let lon = li[0]
+  let lon = li[0]
   let lat = li[1]
   let y = (oldmaxLat - lat) / (ht) * height
   let x = (oldmaxLon - lon) / (wd) * width
-  return [x, y]*/
-}
+  return [x, y]
+}*/
 
+const projection = d3.geoMercator().scale(1200000).center([midLon, midLat]).translate([480,300]);
 
-console.log(projection([-71.1181106,42.3723099]))
+console.log(midLon, midLat)
 
 const scales = {
   // used to scale airport bubbles
@@ -112,29 +108,6 @@ function processData(values) {
     link.target.incoming += link.count;
   });
   console.log(airports)
-
-  // remove airports out of bounds
-  //let old = airports.length;
-  //airports = airports.filter(airport => airport.x >= 0 && airport.y >= 0);
-  //console.log(" removed: " + (old - airports.length) + " airports out of bounds");
-
-  // remove airports with NA state
-  //old = airports.length;
-  //airports = airports.filter(airport => airport.state !== "NA");
-  //console.log(" removed: " + (old - airports.length) + " airports with NA state");
-
-  // remove airports without any flights
-  //old = airports.length;
-  //airports = airports.filter(airport => airport.outgoing > 0 && airport.incoming > 0);
-  //console.log(" removed: " + (old - airports.length) + " airports without flights");
-
-  // sort airports by outgoing degree
-  //airports.sort((a, b) => d3.descending(a.outgoing, b.outgoing));
-
-  // keep only the top airports
-  //old = airports.length;
-  //airports = airports.slice(0, 50);
-  //console.log(" removed: " + (old - airports.length) + " airports with low outgoing degree");
 
   // done filtering airports can draw
   drawAirports(airports);
