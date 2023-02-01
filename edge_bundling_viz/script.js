@@ -43,7 +43,7 @@ function projection(li) {
   return [x, y]
 }*/
 
-const projection = d3.geoMercator().scale(1200000).center([midLon, midLat]).translate([480,300]);
+const projection = d3.geoMercator().scale(1200000).center([midLon, midLat]).translate([480,300]); // 650000
 
 console.log(midLon, midLat)
 

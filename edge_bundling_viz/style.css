@@ -58,3 +58,9 @@ g#voronoi {
   fill: white;
   text-shadow: 1px 1px 0 #252525, 1px -1px 0 #252525, -1px 1px 0 #252525, -1px -1px 0 #252525;
 }
+
+.mapbox {
+  font-family: Cousine, sans-serif;
+  font-weight: 400;
+  fill: #f2c0bd;
+}
