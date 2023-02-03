@@ -24,12 +24,12 @@ body {
 .airport {
   fill: white;
   opacity: 0.6;
-  stroke: #252525;
+  stroke: #000;
 }
 
 .flight {
   fill: none;
-  stroke: #252525;
+  stroke: rgb(40, 1, 1);
   stroke-width: 1px;
   stroke-opacity: 0.1;
 }
@@ -42,7 +42,7 @@ body {
 
 .highlight {
   opacity: 1 !important;
-  stroke: red !important;
+  stroke: #dc143c !important;
   stroke-width: 2px !important;
   stroke-opacity: 0.8 !important;
 }
@@ -62,5 +62,5 @@ g#voronoi {
 .mapbox {
   font-family: Cousine, sans-serif;
   font-weight: 400;
-  fill: #f2c0bd;
+  fill: #ffada8;
 }
